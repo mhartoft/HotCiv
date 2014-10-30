@@ -28,6 +28,8 @@ package hotciv.framework;
    See the License for the specific language governing permissions and
    limitations under the License.
 
+
+ Mikael Hartoft now maintains these values!
 */
 public class GameConstants {
   // The size of the world is set permanently to a 16x16 grid 
