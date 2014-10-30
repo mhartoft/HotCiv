@@ -30,6 +30,7 @@ package hotciv.framework;
 
 
  Mikael Hartoft now maintains these values!
+ Kristian Dath
 */
 public class GameConstants {
   // The size of the world is set permanently to a 16x16 grid 
