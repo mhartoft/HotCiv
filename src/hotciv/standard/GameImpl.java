@@ -2,6 +2,9 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /** Skeleton implementation of HotCiv.
  
    This source code is from the book 
@@ -30,16 +33,64 @@ import hotciv.framework.*;
 */
 
 public class GameImpl implements Game {
-  public Tile getTileAt( Position p ) { return null; }
-  public Unit getUnitAt( Position p ) { return null; }
-  public City getCityAt( Position p ) { return null; }
-  public Player getPlayerInTurn() { return null; }
-  public Player getWinner() { return null; }
-  public int getAge() { return 0; }
-  public boolean moveUnit( Position from, Position to ) {
-    return false;
+    private HashMap tiles;
+    private HashMap units;
+    private HashMap cities;
+    private int yearBC;
+    private Player playerInTurn;
+
+    public GameImpl() {
+        tiles = new HashMap();
+        tiles.put(new Position(2,2), new TileImpl(GameConstants.MOUNTAINS));
+        tiles.put(new Position(1,0), new TileImpl(GameConstants.OCEANS));
+        tiles.put(new Position(0,1), new TileImpl(GameConstants.HILLS));
+
+        units = new HashMap();
+        units.put(new Position(3,2), new UnitImpl(GameConstants.LEGION, Player.BLUE));
+        units.put(new Position(2,0), new UnitImpl(GameConstants.ARCHER, Player.RED));
+        units.put(new Position(4,3), new UnitImpl(GameConstants.SETTLER, Player.RED));
+
+        cities = new HashMap();
+        cities.put(new Position(1,1), new CityImpl(Player.RED));
+        cities.put(new Position(4,1), new CityImpl(Player.BLUE));
+
+        yearBC = 4000;
+
+        playerInTurn = Player.RED;
+    }
+
+  public Tile getTileAt(final Position p ) {
+      Tile t = (Tile) tiles.get(p);
+      if (t == null) return new TileImpl(GameConstants.PLAINS);
+      return (Tile) tiles.get(p);
   }
-  public void endOfTurn() {}
+  public Unit getUnitAt( Position p ) {
+      return (Unit) units.get(p);
+  }
+  public City getCityAt( Position p ) { return (City) cities.get(p); }
+  public Player getPlayerInTurn() {
+      return playerInTurn;
+  }
+  public Player getWinner() { return null; }
+  public int getAge() {
+      return yearBC;
+  }
+  public boolean moveUnit( Position from, Position to ) {
+    Tile t = getTileAt(to);
+    if (t.getTypeString() == GameConstants.MOUNTAINS) return false;
+    if (t.getTypeString() == GameConstants.OCEANS) return false;
+    units.put(to,getUnitAt(from));
+    units.remove(from,getUnitAt(from));
+    return true;
+  }
+  public void endOfTurn() {
+      yearBC -= 100; // The world ages 100 years
+      if (getPlayerInTurn() == Player.RED){ // If it's red's turn, it becomes blue's turn
+          playerInTurn = Player.BLUE;
+      }else{ // otherwise it becomes red's turn
+          playerInTurn = Player.RED;
+      }
+  }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
   public void changeProductionInCityAt( Position p, String unitType ) {}
   public void performUnitActionAt( Position p ) {}
