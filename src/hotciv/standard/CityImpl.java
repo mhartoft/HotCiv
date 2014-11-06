@@ -1,4 +1,6 @@
-package hotciv.framework;
+package hotciv.standard;
+
+import hotciv.framework.*;
 
 /**
  * Created by mha2908 on 04/11/14.

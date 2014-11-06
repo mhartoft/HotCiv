@@ -59,12 +59,13 @@ public class TestAlphaCiv {
     }
     @Test
     public void shouldNotBeAbleToMoveOverMountain(){
-        Boolean move = game.moveUnit(new Position(1,1), new Position(2,2));
+        game.endOfTurn();
+        Boolean move = game.moveUnit(new Position(3,2), new Position(2,2));
         assertEquals("Should not be able to move over mountains", false, move);
     }
     @Test
     public void shouldNotBeAbleToMoveOverOceans(){
-        Boolean move = game.moveUnit(new Position (0,0), new Position(1,0));
+        Boolean move = game.moveUnit(new Position (2,0), new Position(1,0));
         assertEquals("Should not be able to move over oceans", false, move);
     }
 
@@ -110,7 +111,7 @@ public class TestAlphaCiv {
     @Test
     public void shouldBeYear3900BCAndBluesTurnAfterFirstTurnover(){
         game.endOfTurn();
-        assertEquals("Year should be 3900 BC after 1 turn", 3900, game.getAge());
+        assertEquals("Year should be 4000 BC after 1 turn", 4000, game.getAge());
         assertEquals("Should be blue's turn after 1 red turn", Player.BLUE, game.getPlayerInTurn());
     }
 
@@ -120,7 +121,7 @@ public class TestAlphaCiv {
         game.endOfTurn();
         game.endOfTurn();
         game.endOfTurn();
-        assertEquals("Year should be 3600 BC after 4 turns", 3600, game.getAge());
+        assertEquals("Year should be 3800 BC after 4 turns", 3800, game.getAge()); // 4 turns = 2 rounds
         assertEquals("Should be red's turn after 4 turns", Player.RED, game.getPlayerInTurn());
     }
 
@@ -128,6 +129,59 @@ public class TestAlphaCiv {
     public void shouldHaveARedCityAt1_1(){
         City c = game.getCityAt(new Position(1,1));
         assertEquals("There should be a red city at 1,1", Player.RED, c.getOwner());
+    }
+
+    @Test
+    public void shouldNotBeAbleToMoveToNonAdjacentInOneMove(){
+        boolean move1 = game.moveUnit(new Position(2,0), new Position(8,8));
+        boolean move2 = game.moveUnit(new Position(2,0), new Position(4,0));
+        boolean move3 = game.moveUnit(new Position(3,2), new Position(1,2));
+        assertEquals("Shouldnt be able to move from 2,0 to 8,8", false, move1);
+        assertEquals("Shouldnt be able to move from 2,0 to 4,0", false, move2);
+        assertEquals("Shouldnt be able to move from 3,2 to 1,2", false, move3);
+    }
+
+    @Test
+    public void shouldNotBeAbleToMoveOutOfWorld(){
+        boolean move = game.moveUnit(new Position(2,0), new Position(2,-1));
+        assertEquals("Shouldnt be able to move out of world", false, move);
+    }
+
+    @Test
+    public void shouldBeReturnCrushedEnemyWhichIsNull(){
+        Unit defenseUnit = game.getUnitAt(new Position(3,2));
+        // I move the red archer three times, till it ends on the blue legion
+        game.moveUnit(new Position(2,0), new Position(2,1));
+        game.moveUnit(new Position(2,1), new Position(3,1));
+        game.moveUnit(new Position(3,1), new Position(3,2));
+        // Critical position is 3,2.
+        Unit victoriousUnit = game.getUnitAt(new Position(3,2));
+        assertEquals("Owners should be different", false, victoriousUnit.getOwner() == defenseUnit.getOwner());
+        assertEquals("Victorious unit should be Red", Player.RED, victoriousUnit.getOwner());
+        game.moveUnit(new Position(3,2), new Position(3,3));
+        assertEquals("Unit on 3,3 should be owned by Red", Player.RED, game.getUnitAt(new Position(3,3)).getOwner());
+        assertEquals("There should not, be no unit at 3,2", null, game.getUnitAt(new Position(3,2)));
+    }
+
+    @Test
+    public void shouldNotBeAbleToMoveUntoFriendlyUnits(){
+        game.moveUnit(new Position(2,0), new Position(2,1));
+        game.moveUnit(new Position(2,1), new Position(3,1));
+        game.moveUnit(new Position(3,1), new Position(3,2));
+        boolean move = game.moveUnit(new Position(3,2), new Position(4,3));
+        assertEquals("Should not be able to move the archer unto the settler", false, move);
+    }
+
+    @Test
+    public void shouldOnlyBeAbleToMoveOwnUnits(){
+        boolean move = game.moveUnit(new Position(3,2), new Position(4,2));
+        assertEquals("Should not be able to move the blue unit", false, move);
+    }
+
+    @Test
+    public void shouldNotBeAbleToMoveNothing(){
+        boolean move = game.moveUnit(new Position(0,0), new Position(1,1));
+        assertEquals("There is no unit at 0,0, and we should not be able to make this move", false, move);
     }
 
 }
