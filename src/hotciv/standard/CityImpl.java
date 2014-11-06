@@ -10,10 +10,13 @@ public class CityImpl implements City {
     private int size;
     private String production;
     private String workForceFocus;
+    private int resources;
 
     public CityImpl(Player owner){
         this.owner = owner;
         this.size = 1;
+        this.resources = 0;
+        this.production = GameConstants.ARCHER;
     }
     @Override
     public Player getOwner() {
@@ -27,11 +30,25 @@ public class CityImpl implements City {
 
     @Override
     public String getProduction() {
-        return null;
+        return production;
     }
 
     @Override
     public String getWorkforceFocus() {
         return null;
+    }
+
+    public int getResources() { return resources; }
+
+    public void accumulateResources(){
+        resources += 6;
+    }
+
+    public void setProduction(String production){
+        this.production = production;
+    }
+
+    public void subtractResources(int n){
+        this.resources -= n;
     }
 }

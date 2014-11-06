@@ -116,11 +116,8 @@ public class TestAlphaCiv {
     }
 
     @Test
-    public void shouldBeYear3600AndRedsTurnAfter4Turns(){
-        game.endOfTurn();
-        game.endOfTurn();
-        game.endOfTurn();
-        game.endOfTurn();
+    public void shouldBeYear3800AndRedsTurnAfter4Turns(){
+        helperForEndOfTurns(4);
         assertEquals("Year should be 3800 BC after 4 turns", 3800, game.getAge()); // 4 turns = 2 rounds
         assertEquals("Should be red's turn after 4 turns", Player.RED, game.getPlayerInTurn());
     }
@@ -182,6 +179,59 @@ public class TestAlphaCiv {
     public void shouldNotBeAbleToMoveNothing(){
         boolean move = game.moveUnit(new Position(0,0), new Position(1,1));
         assertEquals("There is no unit at 0,0, and we should not be able to make this move", false, move);
+    }
+
+    @Test
+    public void shouldGet6ResourcesInCities(){
+        helperForEndOfRounds(1);
+        CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+        CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
+        assertEquals("Red city should have 6 resources after 1 round", 6, redCity.getResources());
+        assertEquals("Blue city should have 6 resources after 1 round", 6, blueCity.getResources());
+    }
+
+    @Test
+    public void shouldProduceArcherForCitiesAfter2Rounds(){
+        CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+        CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
+        redCity.setProduction(GameConstants.ARCHER);
+        blueCity.setProduction(GameConstants.ARCHER);
+        helperForEndOfRounds(2);
+        UnitImpl redArcher = (UnitImpl) game.getUnitAt(new Position(1,1));
+        UnitImpl blueArcher = (UnitImpl) game.getUnitAt(new Position(4,1));
+        assertEquals("Red city should have produced an archer after 2 rounds", GameConstants.ARCHER, redArcher.getTypeString());
+        assertEquals("Blue city should have produced an archer after 2 rounds", GameConstants.ARCHER, blueArcher.getTypeString());
+    }
+
+    @Test
+    public void shouldHaveRemovedResourcesFromCitiesAfterProduction(){
+        CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+        CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
+        redCity.setProduction(GameConstants.ARCHER);
+        blueCity.setProduction(GameConstants.ARCHER);
+        helperForEndOfRounds(2);
+        assertEquals("Red city should have 2 resources after 2 rounds + 1 archer prod.", (6*2)-10, redCity.getResources());
+        assertEquals("Blue city should have 2 resources after 2 rounds + 1 archer prod.", (6*2)-10, blueCity.getResources());
+    }
+
+    @Test
+    public void shouldFindSmartPlaceForMultipleUnitsFromSameCity(){
+        CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+        CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
+        redCity.setProduction(GameConstants.ARCHER);
+        blueCity.setProduction(GameConstants.SETTLER);
+        helperForEndOfRounds(4);
+        UnitImpl redUnit = (UnitImpl) game.getUnitAt(new Position(0,1));
+        assertEquals("Red has produced 2 archers. The 2nd should be at 0,1", GameConstants.ARCHER, redUnit.getTypeString());
+    }
+
+    public void helperForEndOfTurns(int n){
+        for (int i = 0; i < n; i++){
+            game.endOfTurn();
+        }
+    }
+    public void helperForEndOfRounds(int n){
+        helperForEndOfTurns(n*2);
     }
 
 }
