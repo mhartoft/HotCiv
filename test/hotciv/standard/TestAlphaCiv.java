@@ -225,6 +225,18 @@ public class TestAlphaCiv {
         assertEquals("Red has produced 2 archers. The 2nd should be at 0,1", GameConstants.ARCHER, redUnit.getTypeString());
     }
 
+    @Test
+    public void shouldMakeRedWinnerAt3000BC(){
+        helperForEndOfRounds(10);
+        assertEquals("Red Should be the winner at 3000 BC", Player.RED, game.getWinner());
+    }
+
+    @Test
+    public void shouldNotHaveAWinnerAt3500BC(){
+        helperForEndOfRounds(5);
+        assertEquals("There should not be a winner at 3500 BC", null, game.getWinner());
+    }
+
     public void helperForEndOfTurns(int n){
         for (int i = 0; i < n; i++){
             game.endOfTurn();

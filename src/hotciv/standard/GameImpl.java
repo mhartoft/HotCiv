@@ -40,6 +40,7 @@ public class GameImpl implements Game {
     private int yearBC;
     private Player playerInTurn;
     private HashMap costs;
+    private Player winner;
 
     public GameImpl() {
         tiles = new HashMap();
@@ -62,6 +63,7 @@ public class GameImpl implements Game {
         costs.put(GameConstants.SETTLER, 30);
 
         yearBC = 4000;
+        winner = null;
 
         playerInTurn = Player.RED;
     }
@@ -78,7 +80,7 @@ public class GameImpl implements Game {
     public Player getPlayerInTurn() {
         return playerInTurn;
     }
-    public Player getWinner() { return null; }
+    public Player getWinner() { return winner;}
     public int getAge() {
         return yearBC;
     }
@@ -118,6 +120,7 @@ public class GameImpl implements Game {
             }
 
             yearBC -= 100; // The world ages 100 years
+            if (yearBC <= 3000)winner = Player.RED;
         }
     }
     public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
