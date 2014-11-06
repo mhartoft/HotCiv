@@ -62,7 +62,7 @@
               public Tile getTileAt(final Position p ) {
                   TileImpl t = (TileImpl) tiles.get(p);
                   if (t == null) return new TileImpl(GameConstants.PLAINS);
-                  return (TileImpl) tiles.get(p);
+                  return t;
               }
               public Unit getUnitAt( Position p ) {
                   return (UnitImpl) units.get(p);
@@ -76,7 +76,7 @@
                   return yearBC;
               }
               public boolean moveUnit( Position from, Position to ) {
-                UnitImpl targetUnit = (UnitImpl) units.get(from);
+                UnitImpl targetUnit = (UnitImpl) getUnitAt(from);
                 if (targetUnit == null) return false;
                 if (targetUnit.getOwner() != getPlayerInTurn()) return false;
                 if (isPositionOccupiedByFriendlyUnit(to, targetUnit.getOwner())) return false;
@@ -121,7 +121,7 @@
               }
 
               private boolean isPositionOccupiedByFriendlyUnit(Position to, Player owner) {
-                  UnitImpl unit = (UnitImpl) units.get(to);
+                  UnitImpl unit = (UnitImpl) getUnitAt(to);
                   if(unit == null) return false;
                     return unit.getOwner() == owner;
               }
