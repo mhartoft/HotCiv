@@ -34,6 +34,9 @@ import java.util.Map;
  */
 
 public class GameImpl implements Game {
+
+    private AgingStrategy ageController;
+    private WinnerStrategy winnerController;
     private HashMap tiles;
     private HashMap units;
     private HashMap<Position, CityImpl> cities;
@@ -42,7 +45,10 @@ public class GameImpl implements Game {
     private HashMap costs;
     private Player winner;
 
-    public GameImpl() {
+    public GameImpl(AgingStrategy chosenAgeStrategy, WinnerStrategy chosenWinnerStrategy) {
+        this.ageController = chosenAgeStrategy;
+        this.winnerController = chosenWinnerStrategy;
+        this.winnerController.attachGame(this);
         tiles = new HashMap();
         tiles.put(new Position(2,2), new TileImpl(GameConstants.MOUNTAINS));
         tiles.put(new Position(1,0), new TileImpl(GameConstants.OCEANS));
@@ -118,9 +124,8 @@ public class GameImpl implements Game {
                     c.subtractResources(targetCost);
                 }
             }
-
-            yearBC -= 100; // The world ages 100 years
-            if (yearBC <= 3000)winner = Player.RED;
+            yearBC = ageController.age(yearBC);
+            winner = winnerController.getWinner();
         }
     }
     public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
@@ -166,5 +171,9 @@ public class GameImpl implements Game {
             if (getUnitAt(p) == null) return p;
         }
         return null; // what to do if no tile is available?
+    }
+
+    public void setAgeController(AgingStrategy ageController) {
+        this.ageController = ageController;
     }
 }
