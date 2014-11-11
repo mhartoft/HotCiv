@@ -1,4 +1,4 @@
-package hotciv.standard;
+package hotciv.common;
 
 /**
  * Created by mha2908 on 11/11/14.

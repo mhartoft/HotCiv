@@ -2,6 +2,9 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
+import hotciv.variants.AlphaCivAction;
+import hotciv.variants.AlphaCivAging;
+import hotciv.variants.AlphaCivWinner;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -36,7 +39,9 @@ public class TestAlphaCiv {
     /** Fixture for alphaciv testing. */
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaCivAging(), new AlphaCivWinner());
+        game = new GameImpl(new AlphaCivAging(),
+                            new AlphaCivWinner(),
+                            new AlphaCivAction());
     }
 
     @Test
@@ -105,20 +110,20 @@ public class TestAlphaCiv {
 
     @Test
     public void shouldBeYear4000BCAtFirst(){
-        assertEquals("Year should be 4000 BC from the get-go", 4000, game.getAge());
+        assertEquals("Year should be 4000 BC from the get-go", -4000, game.getAge());
     }
 
     @Test
     public void shouldBeYear3900BCAndBluesTurnAfterFirstTurnover(){
         game.endOfTurn();
-        assertEquals("Year should be 4000 BC after 1 turn", 4000, game.getAge());
+        assertEquals("Year should be 4000 BC after 1 turn", -4000, game.getAge());
         assertEquals("Should be blue's turn after 1 red turn", Player.BLUE, game.getPlayerInTurn());
     }
 
     @Test
     public void shouldBeYear3800AndRedsTurnAfter4Turns(){
         helperForEndOfTurns(4);
-        assertEquals("Year should be 3800 BC after 4 turns", 3800, game.getAge()); // 4 turns = 2 rounds
+        assertEquals("Year should be 3800 BC after 4 turns", -3800, game.getAge()); // 4 turns = 2 rounds
         assertEquals("Should be red's turn after 4 turns", Player.RED, game.getPlayerInTurn());
     }
 

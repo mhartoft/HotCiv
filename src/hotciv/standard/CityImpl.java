@@ -51,4 +51,8 @@ public class CityImpl implements City {
     public void subtractResources(int n){
         this.resources -= n;
     }
+
+    public void changeOwner(Player newOwner){
+        this.owner = newOwner;
+    }
 }

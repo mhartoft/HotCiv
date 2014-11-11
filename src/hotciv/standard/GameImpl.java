@@ -1,5 +1,8 @@
 package hotciv.standard;
 
+import hotciv.common.AgingStrategy;
+import hotciv.common.UnitActionStrategy;
+import hotciv.common.WinnerStrategy;
 import hotciv.framework.*;
 
 import java.util.ArrayList;
@@ -37,18 +40,22 @@ public class GameImpl implements Game {
 
     private AgingStrategy ageController;
     private WinnerStrategy winnerController;
+    private UnitActionStrategy actionStrategy;
     private HashMap tiles;
     private HashMap units;
     private HashMap<Position, CityImpl> cities;
-    private int yearBC;
+    private int year;
     private Player playerInTurn;
     private HashMap costs;
     private Player winner;
 
-    public GameImpl(AgingStrategy chosenAgeStrategy, WinnerStrategy chosenWinnerStrategy) {
+    public GameImpl(AgingStrategy chosenAgeStrategy,
+                    WinnerStrategy chosenWinnerStrategy,
+                    UnitActionStrategy actionStrategy) {
+
         this.ageController = chosenAgeStrategy;
         this.winnerController = chosenWinnerStrategy;
-        this.winnerController.attachGame(this);
+        this.actionStrategy = actionStrategy;
         tiles = new HashMap();
         tiles.put(new Position(2,2), new TileImpl(GameConstants.MOUNTAINS));
         tiles.put(new Position(1,0), new TileImpl(GameConstants.OCEANS));
@@ -68,7 +75,7 @@ public class GameImpl implements Game {
         costs.put(GameConstants.LEGION, 15);
         costs.put(GameConstants.SETTLER, 30);
 
-        yearBC = 4000;
+        year = -4000;
         winner = null;
 
         playerInTurn = Player.RED;
@@ -88,13 +95,14 @@ public class GameImpl implements Game {
     }
     public Player getWinner() { return winner;}
     public int getAge() {
-        return yearBC;
+        return year;
     }
     public boolean moveUnit( Position from, Position to ) {
         UnitImpl targetUnit = (UnitImpl) getUnitAt(from);
         if (targetUnit == null) return false;
         if (targetUnit.getOwner() != getPlayerInTurn()) return false;
         if (isPositionOccupiedByFriendlyUnit(to, targetUnit.getOwner())) return false;
+        if (targetUnit.getFortified()) return false;
 
         Tile t = getTileAt(to);
         if (t.getTypeString() == GameConstants.MOUNTAINS) return false;
@@ -102,6 +110,13 @@ public class GameImpl implements Game {
         if (positionsAreAdjacent(from, to) && isPositionInWorld(to)) {
             units.put(to, getUnitAt(from));
             units.remove(from, getUnitAt(from));
+            // if a city exists at end location, change ownership
+            CityImpl city = (CityImpl) getCityAt(to);
+            if (city != null) city.changeOwner(targetUnit.getOwner());
+            // quick test to see if a winner has been decided
+            // As BetaCiv's win condition is the same owner of all cities
+            // may be wrongly placed
+            winner = winnerController.getWinner(this);
             return true;
         }
         return false;
@@ -124,13 +139,15 @@ public class GameImpl implements Game {
                     c.subtractResources(targetCost);
                 }
             }
-            yearBC = ageController.age(yearBC);
-            winner = winnerController.getWinner();
+            year = ageController.age(year);
+            winner = winnerController.getWinner(this);
         }
     }
     public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
     public void changeProductionInCityAt( Position p, String unitType ) {}
-    public void performUnitActionAt( Position p ) {}
+    public void performUnitActionAt( Position p ) {
+        actionStrategy.action(this,p);
+    }
 
     private boolean positionsAreAdjacent(Position from, Position to){
         // Math.abs() gives absolute value (e.g. -10 becomes 10)
@@ -175,5 +192,16 @@ public class GameImpl implements Game {
 
     public void setAgeController(AgingStrategy ageController) {
         this.ageController = ageController;
+    }
+
+    public HashMap<Position, CityImpl> getCities(){
+        return cities;
+    }
+
+    public void removeUnit(Position p){
+        units.remove(p);
+    }
+    public void makeCityAt(Position p, Player owner){
+        cities.put(p,new CityImpl(owner));
     }
 }
