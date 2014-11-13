@@ -136,12 +136,6 @@ public class TestAlphaCiv {
     }
 
     @Test
-    public void shouldShowSizeAs1ForCitites(){
-        City c = game.getCityAt(new Position(1,1));
-        assertEquals("The city at 1,1 should have size 1", 1, c.getSize());
-    }
-
-    @Test
     public void shouldNotBeAbleToMoveToNonAdjacentInOneMove(){
         boolean move1 = game.moveUnit(new Position(2,0), new Position(8,8));
         boolean move2 = game.moveUnit(new Position(2,0), new Position(4,0));
