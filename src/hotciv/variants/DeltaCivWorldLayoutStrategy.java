@@ -45,10 +45,14 @@ public class DeltaCivWorldLayoutStrategy implements WorldLayoutStrategy {
 
     @Override
     public void worldLayout(GameImpl gameObj) {
+        // make tiles
         for (Map.Entry<Position, String> entry : theWorld.entrySet()) {
             Position p = entry.getKey();
             String t = entry.getValue();
             gameObj.createTile(p, t);
         }
+        // and 2 cities
+        gameObj.createCity(new Position(8,12), Player.RED);
+        gameObj.createCity(new Position(4,5), Player.BLUE);
     }
 }

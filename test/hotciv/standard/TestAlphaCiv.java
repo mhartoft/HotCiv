@@ -136,6 +136,12 @@ public class TestAlphaCiv {
     }
 
     @Test
+    public void shouldShowSizeAs1ForCitites(){
+        City c = game.getCityAt(new Position(1,1));
+        assertEquals("The city at 1,1 should have size 1", 1, c.getSize());
+    }
+
+    @Test
     public void shouldNotBeAbleToMoveToNonAdjacentInOneMove(){
         boolean move1 = game.moveUnit(new Position(2,0), new Position(8,8));
         boolean move2 = game.moveUnit(new Position(2,0), new Position(4,0));
@@ -199,10 +205,8 @@ public class TestAlphaCiv {
 
     @Test
     public void shouldProduceArcherForCitiesAfter2Rounds(){
-        CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
-        CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
-        redCity.setProduction(GameConstants.ARCHER);
-        blueCity.setProduction(GameConstants.ARCHER);
+        game.changeProductionInCityAt(new Position(1,1), GameConstants.ARCHER);
+        game.changeProductionInCityAt(new Position(4,1), GameConstants.ARCHER);
         helperForEndOfRounds(2);
         UnitImpl redArcher = (UnitImpl) game.getUnitAt(new Position(1,1));
         UnitImpl blueArcher = (UnitImpl) game.getUnitAt(new Position(4,1));

@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  */
 public class TestDeltaCiv {
     private Game game;
-    /** Fixture for gammaciv testing. */
+    /** Fixture for DeltaCiv testing. */
     @Before
     public void setUp() {
         String[] layout =
@@ -67,16 +67,21 @@ public class TestDeltaCiv {
         Tile t = game.getTileAt(new Position(0,0));
         assertEquals("Should be ocean at 0,0", GameConstants.OCEANS, t.getTypeString());
     }
-
-
-
-    public void helperForEndOfTurns(int n){
-        for (int i = 0; i < n; i++){
-            game.endOfTurn();
-        }
+    @Test
+    public void shouldBeMountainAt3_3(){
+        Tile t = game.getTileAt(new Position(3,3));
+        assertEquals("Should be mountain at 3,3", GameConstants.MOUNTAINS, t.getTypeString());
     }
-    public void helperForEndOfRounds(int n){
-        helperForEndOfTurns(n*2);
+
+    @Test
+    public void shouldBeRedCityAt8_12(){
+        City c = game.getCityAt(new Position(8,12));
+        assertEquals("Should be red city at 8,12", Player.RED, c.getOwner());
+    }
+    @Test
+    public void shouldBeBlueCityAt4_5(){
+        City c = game.getCityAt(new Position(4,5));
+        assertEquals("Should be blue city at 4,5", Player.BLUE, c.getOwner());
     }
 
 }

@@ -43,8 +43,8 @@ public class GameImpl implements Game {
     private WinnerStrategy winnerController;
     private UnitActionStrategy actionStrategy;
     private WorldLayoutStrategy layoutStrategy;
-    private HashMap tiles;
-    private HashMap units;
+    private HashMap<Position, TileImpl> tiles;
+    private HashMap<Position, UnitImpl> units;
     private HashMap<Position, CityImpl> cities;
     private int year;
     private Player playerInTurn;
@@ -76,15 +76,15 @@ public class GameImpl implements Game {
         playerInTurn = Player.RED;
     }
 
-    public Tile getTileAt(final Position p ) {
+    public TileImpl getTileAt(final Position p ) {
         TileImpl t = (TileImpl) tiles.get(p);
         if (t == null) return new TileImpl(GameConstants.PLAINS);
         return t;
     }
-    public Unit getUnitAt( Position p ) {
-        return (UnitImpl) units.get(p);
+    public UnitImpl getUnitAt( Position p ) {
+        return units.get(p);
     }
-    public City getCityAt( Position p ) { return (CityImpl) cities.get(p); }
+    public CityImpl getCityAt( Position p ) { return cities.get(p); }
     public Player getPlayerInTurn() {
         return playerInTurn;
     }
@@ -106,7 +106,7 @@ public class GameImpl implements Game {
             units.put(to, getUnitAt(from));
             units.remove(from, getUnitAt(from));
             // if a city exists at end location, change ownership
-            CityImpl city = (CityImpl) getCityAt(to);
+            CityImpl city = getCityAt(to);
             if (city != null) city.changeOwner(targetUnit.getOwner());
             return true;
         }
@@ -134,7 +134,10 @@ public class GameImpl implements Game {
         }
     }
     public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-    public void changeProductionInCityAt( Position p, String unitType ) {}
+    public void changeProductionInCityAt( Position p, String unitType ) {
+        CityImpl c = getCityAt(p);
+        c.setProduction(unitType);
+    }
     public void performUnitActionAt( Position p ) {
         actionStrategy.action(this,p);
     }
@@ -178,10 +181,6 @@ public class GameImpl implements Game {
             if (getUnitAt(p) == null) return p;
         }
         return null; // what to do if no tile is available?
-    }
-
-    public void setAgeController(AgingStrategy ageController) {
-        this.ageController = ageController;
     }
 
     public HashMap<Position, CityImpl> getCities(){
