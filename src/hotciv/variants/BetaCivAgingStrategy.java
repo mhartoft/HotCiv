@@ -5,7 +5,7 @@ import hotciv.common.AgingStrategy;
 /**
  * Created by mha2908 on 11/11/14.
  */
-public class BetaCivAging implements AgingStrategy {
+public class BetaCivAgingStrategy implements AgingStrategy {
     @Override
     public int age(int oldAge) {
         if (oldAge < -100) return oldAge+100;

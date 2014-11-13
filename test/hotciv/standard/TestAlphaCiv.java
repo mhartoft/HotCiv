@@ -5,6 +5,7 @@ import hotciv.framework.*;
 import hotciv.variants.AlphaCivAction;
 import hotciv.variants.AlphaCivAging;
 import hotciv.variants.AlphaCivWinner;
+import hotciv.variants.AlphaCivWorldLayout;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -41,7 +42,8 @@ public class TestAlphaCiv {
     public void setUp() {
         game = new GameImpl(new AlphaCivAging(),
                             new AlphaCivWinner(),
-                            new AlphaCivAction());
+                            new AlphaCivAction(),
+                            new AlphaCivWorldLayout());
     }
 
     @Test

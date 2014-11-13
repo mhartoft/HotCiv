@@ -32,30 +32,40 @@ import static org.junit.Assert.*;
  limitations under the License.
 
  */
-public class TestGammaCiv {
+public class TestDeltaCiv {
     private Game game;
     /** Fixture for gammaciv testing. */
     @Before
     public void setUp() {
+        String[] layout =
+                new String[] {
+                        "...ooMooooo.....",
+                        "..ohhoooofffoo..",
+                        ".oooooMooo...oo.",
+                        ".ooMMMoooo..oooo",
+                        "...ofooohhoooo..",
+                        ".ofoofooooohhoo.",
+                        "...ooo..........",
+                        ".ooooo.ooohooM..",
+                        ".ooooo.oohooof..",
+                        "offfoooo.offoooo",
+                        "oooooooo...ooooo",
+                        ".ooMMMoooo......",
+                        "..ooooooffoooo..",
+                        "....ooooooooo...",
+                        "..ooohhoo.......",
+                        ".....ooooooooo..",
+                };
         game = new GameImpl(new AlphaCivAging(),
                 new AlphaCivWinner(),
-                new GammaCivAction(),
-                new AlphaCivWorldLayout()); // GammaCiv resembles AlphaCiv except for unit actions
+                new AlphaCivAction(),
+                new DeltaCivWorldLayoutStrategy(layout));
     }
 
     @Test
-    public void shouldTurnSettlerIntoCity(){
-        game.performUnitActionAt(new Position(4,3));
-        City c = game.getCityAt(new Position(4,3));
-        assertEquals("Should be a red city at 4,3", Player.RED,c.getOwner());
-    }
-    @Test
-    public void shouldFortifyArcherAt2_0(){
-        game.performUnitActionAt(new Position(2,0));
-        Unit u = game.getUnitAt(new Position(2,0));
-        assertEquals("Defense should be 6", 6, u.getDefensiveStrength());
-        boolean move = game.moveUnit(new Position(2,0), new Position(2,1));
-        assertEquals("Should not be able to move fortified archer", false, move);
+    public void shouldBeOceanAt0_0(){
+        Tile t = game.getTileAt(new Position(0,0));
+        assertEquals("Should be ocean at 0,0", GameConstants.OCEANS, t.getTypeString());
     }
 
 

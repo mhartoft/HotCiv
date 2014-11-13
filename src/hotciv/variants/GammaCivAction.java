@@ -2,9 +2,7 @@ package hotciv.variants;
 
 import hotciv.common.UnitActionStrategy;
 import hotciv.framework.GameConstants;
-import hotciv.framework.Player;
 import hotciv.framework.Position;
-import hotciv.framework.Unit;
 import hotciv.standard.GameImpl;
 import hotciv.standard.UnitImpl;
 
@@ -19,7 +17,7 @@ public class GammaCivAction implements UnitActionStrategy {
         String t = u.getTypeString();
         if (t == GameConstants.SETTLER){
             gameObj.removeUnit(p);
-            gameObj.makeCityAt(p,u.getOwner());
+            gameObj.createCity(p, u.getOwner());
         }
         if (t == GameConstants.ARCHER){
             u.setFortified();
