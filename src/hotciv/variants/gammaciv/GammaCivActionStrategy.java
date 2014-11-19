@@ -1,4 +1,4 @@
-package hotciv.variants;
+package hotciv.variants.gammaciv;
 
 import hotciv.common.UnitActionStrategy;
 import hotciv.framework.GameConstants;
@@ -9,7 +9,7 @@ import hotciv.standard.UnitImpl;
 /**
  * Created by mha2908 on 11/11/14.
  */
-public class GammaCivAction implements UnitActionStrategy {
+public class GammaCivActionStrategy implements UnitActionStrategy {
 
     @Override
     public void action(GameImpl gameObj, Position p) {

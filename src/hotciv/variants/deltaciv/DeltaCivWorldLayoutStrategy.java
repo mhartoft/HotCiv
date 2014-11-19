@@ -1,4 +1,4 @@
-package hotciv.variants;
+package hotciv.variants.deltaciv;
 
 import hotciv.common.WorldLayoutStrategy;
 import hotciv.standard.GameImpl;

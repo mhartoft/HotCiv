@@ -4,10 +4,11 @@ import hotciv.framework.City;
 import hotciv.framework.Game;
 import hotciv.framework.Player;
 import hotciv.framework.Position;
-import hotciv.variants.AlphaCivAction;
-import hotciv.variants.AlphaCivWorldLayout;
-import hotciv.variants.BetaCivAgingStrategy;
-import hotciv.variants.BetaCivWinner;
+import hotciv.variants.alphaciv.AlphaCivActionStrategy;
+import hotciv.variants.alphaciv.AlphaCivBattleStrategy;
+import hotciv.variants.alphaciv.AlphaCivWorldLayoutStrategy;
+import hotciv.variants.betaciv.BetaCivAgingStrategy;
+import hotciv.variants.betaciv.BetaCivWinnerStrategy;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -20,9 +21,9 @@ public class TestBetaCiv {
     @Before
     public void setUp() {
         game = new GameImpl(new BetaCivAgingStrategy(),
-                            new BetaCivWinner(),
-                            new AlphaCivAction(),
-                            new AlphaCivWorldLayout()); // alphacivaction is also empty, no need to create another one for beta
+                            new BetaCivWinnerStrategy(),
+                            new AlphaCivActionStrategy(),
+                            new AlphaCivWorldLayoutStrategy(), new AlphaCivBattleStrategy());
     }
 
     @Test

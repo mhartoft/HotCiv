@@ -1,4 +1,4 @@
-package hotciv.variants;
+package hotciv.variants.betaciv;
 
 import hotciv.common.AgingStrategy;
 

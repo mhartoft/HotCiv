@@ -1,9 +1,6 @@
 package hotciv.standard;
 
-import hotciv.common.AgingStrategy;
-import hotciv.common.UnitActionStrategy;
-import hotciv.common.WinnerStrategy;
-import hotciv.common.WorldLayoutStrategy;
+import hotciv.common.*;
 import hotciv.framework.*;
 
 import java.util.ArrayList;
@@ -43,21 +40,25 @@ public class GameImpl implements Game {
     private WinnerStrategy winnerController;
     private UnitActionStrategy actionStrategy;
     private WorldLayoutStrategy layoutStrategy;
+    private BattleStrategy battleStrategy;
     private HashMap<Position, TileImpl> tiles;
     private HashMap<Position, UnitImpl> units;
     private HashMap<Position, CityImpl> cities;
     private int year;
     private Player playerInTurn;
     private HashMap costs;
+    private HashMap<Player, Integer> battleWins;
 
     public GameImpl(AgingStrategy chosenAgeStrategy,
                     WinnerStrategy chosenWinnerStrategy,
                     UnitActionStrategy actionStrategy,
-                    WorldLayoutStrategy layoutStrategy) {
+                    WorldLayoutStrategy layoutStrategy,
+                    BattleStrategy battleStrategy) {
 
         tiles = new HashMap<Position, TileImpl>();
         units = new HashMap<Position, UnitImpl>();
         cities = new HashMap<Position, CityImpl>();
+        battleWins = new HashMap<Player, Integer>();
 
         this.layoutStrategy = layoutStrategy;
         layoutStrategy.worldLayout(this);
@@ -65,6 +66,7 @@ public class GameImpl implements Game {
         this.ageController = chosenAgeStrategy;
         this.winnerController = chosenWinnerStrategy;
         this.actionStrategy = actionStrategy;
+        this.battleStrategy = battleStrategy;
 
         costs = new HashMap();
         costs.put(GameConstants.ARCHER, 10);
@@ -102,21 +104,32 @@ public class GameImpl implements Game {
         Tile t = getTileAt(to);
         if (t.getTypeString().equals(GameConstants.MOUNTAINS)) return false;
         if (t.getTypeString().equals(GameConstants.OCEANS)) return false;
-        if (positionsAreAdjacent(from, to) && isPositionInWorld(to)) {
-            units.put(to, getUnitAt(from));
-            units.remove(from, getUnitAt(from));
-            // if a city exists at end location, change ownership
-            CityImpl city = getCityAt(to);
-            if (city != null) city.changeOwner(targetUnit.getOwner());
-            return true;
+        if (!positionsAreAdjacent(from, to)) return false;
+        // perform battle if enemy is at to location
+        UnitImpl toUnit = getUnitAt(to);
+        if (toUnit != null && !toUnit.getOwner().equals(targetUnit.getOwner())){
+            boolean battleOutcome = battleStrategy.battle(from, to, this);
+            if(!battleOutcome){
+                units.remove(from, getUnitAt(from));
+                return true;
+            }else{
+                increaseWins(targetUnit.getOwner());
+            }
         }
-        return false;
+        units.put(to, getUnitAt(from));
+        units.remove(from, getUnitAt(from));
+        // if a city exists at end location, change ownership
+        CityImpl city = getCityAt(to);
+        if (city != null) city.changeOwner(targetUnit.getOwner());
+        return true;
     }
     public void endOfTurn() {
         if (getPlayerInTurn() == Player.RED){ // If it's red's turn, it becomes blue's turn
             playerInTurn = Player.BLUE;
         }else{ // otherwise it becomes red's turn
             playerInTurn = Player.RED;
+            getWinner(); // synchronizes winner strategies (especially for ZetaCiv)
+
             // Cities accumulate resources
             // And produce if possible
             for (Map.Entry<Position, CityImpl> entry : cities.entrySet()){
@@ -148,15 +161,6 @@ public class GameImpl implements Game {
         int colDistance = Math.abs(to.getColumn()-from.getColumn());
 
         return (rowDistance <= 1 && colDistance <= 1);
-    }
-
-    private boolean isPositionInWorld(Position to) {
-        if (to.getRow() < 0 ||
-                to.getRow() > GameConstants.WORLDSIZE ||
-                to.getColumn() < 0 ||
-                to.getColumn() > GameConstants.WORLDSIZE)
-            return false;
-        return true;
     }
 
     private boolean isPositionOccupiedByFriendlyUnit(Position to, Player owner) {
@@ -199,5 +203,20 @@ public class GameImpl implements Game {
     }
     public void createUnit(Position p, String type, Player owner) {
         units.put(p, new UnitImpl(type, owner));
+    }
+
+    public void increaseWins(Player winner){
+        Integer winsBefore = battleWins.get(winner);
+        if (winsBefore != null){
+            battleWins.put(winner, winsBefore.intValue()+1);
+        }else{
+            battleWins.put(winner, 1);
+        }
+    }
+
+    public HashMap<Player, Integer> getBattleWins() { return battleWins; }
+
+    public void resetBattleCounts(){
+        battleWins = new HashMap<Player, Integer>();
     }
 }

@@ -1,4 +1,4 @@
-package hotciv.variants;
+package hotciv.variants.betaciv;
 
 import hotciv.common.WinnerStrategy;
 import hotciv.framework.Player;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by mha2908 on 11/11/14.
  */
-public class BetaCivWinner implements WinnerStrategy {
+public class BetaCivWinnerStrategy implements WinnerStrategy {
 
     @Override
     public Player getWinner(GameImpl gameObj) {

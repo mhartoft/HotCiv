@@ -13,15 +13,21 @@ public class UnitImpl implements Unit {
     private Player owner;
     private int defense;
     private boolean fortified;
+    private int attack;
 
     public UnitImpl(String type, Player owner) {
         this.type = type;
         this.owner = owner;
         this.fortified = false;
-        if (type == GameConstants.ARCHER || type == GameConstants.SETTLER){
+        if (type.equals(GameConstants.ARCHER)){
             defense = 3;
+            attack = 2;
+        } else if (type.equals(GameConstants.SETTLER)){
+            defense = 3;
+            attack = 0;
         } else {
             defense = 2;
+            attack = 4;
         }
 
     }
@@ -48,7 +54,7 @@ public class UnitImpl implements Unit {
 
     @Override
     public int getAttackingStrength() {
-        return 0;
+        return attack;
     }
 
     public void setDefensiveStrength(int i) {
