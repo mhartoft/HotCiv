@@ -2,10 +2,8 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
-import hotciv.variants.alphaciv.AlphaCivActionStrategy;
-import hotciv.variants.alphaciv.AlphaCivAgingStrategy;
-import hotciv.variants.alphaciv.AlphaCivBattleStrategy;
-import hotciv.variants.alphaciv.AlphaCivWinnerStrategy;
+import hotciv.variants.alphaciv.*;
+import hotciv.variants.deltaciv.DeltaCivFactory;
 import hotciv.variants.deltaciv.DeltaCivWorldLayoutStrategy;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -60,10 +58,7 @@ public class TestDeltaCiv {
                         "..ooohhoo.......",
                         ".....ooooooooo..",
                 };
-        game = new GameImpl(new AlphaCivAgingStrategy(),
-                new AlphaCivWinnerStrategy(),
-                new AlphaCivActionStrategy(),
-                new DeltaCivWorldLayoutStrategy(layout), new AlphaCivBattleStrategy());
+        game = new GameImpl(new DeltaCivFactory(layout));
     }
 
     @Test

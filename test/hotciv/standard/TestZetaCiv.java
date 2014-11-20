@@ -2,10 +2,8 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
-import hotciv.variants.alphaciv.AlphaCivActionStrategy;
-import hotciv.variants.alphaciv.AlphaCivAgingStrategy;
-import hotciv.variants.alphaciv.AlphaCivBattleStrategy;
-import hotciv.variants.alphaciv.AlphaCivWorldLayoutStrategy;
+import hotciv.variants.alphaciv.*;
+import hotciv.variants.zetaciv.ZetaCivFactory;
 import hotciv.variants.zetaciv.ZetaCivWinnerStrategy;
 import org.junit.*;
 
@@ -42,11 +40,7 @@ public class TestZetaCiv {
     /** Fixture for epsilonciv testing. */
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaCivAgingStrategy(),
-                new ZetaCivWinnerStrategy(),
-                new AlphaCivActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                new AlphaCivBattleStrategy());
+        game = new GameImpl(new ZetaCivFactory());
     }
 
     @Test // copied from TestBetaCiv

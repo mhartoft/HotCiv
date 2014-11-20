@@ -5,8 +5,10 @@ import hotciv.framework.*;
 
 import hotciv.variants.alphaciv.AlphaCivActionStrategy;
 import hotciv.variants.alphaciv.AlphaCivAgingStrategy;
+import hotciv.variants.alphaciv.AlphaCivFactory;
 import hotciv.variants.alphaciv.AlphaCivWorldLayoutStrategy;
 import hotciv.variants.epsilonciv.EpsilonCivBattleStrategy;
+import hotciv.variants.epsilonciv.EpsilonCivFactory;
 import hotciv.variants.epsilonciv.EpsilonCivWinnerStrategy;
 import org.junit.*;
 
@@ -45,11 +47,7 @@ public class TestEpsilonCiv {
     /** Fixture for epsilonciv testing. */
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaCivAgingStrategy(),
-                new EpsilonCivWinnerStrategy(new HashMap<Player, Integer>()),
-                new AlphaCivActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(),
-                new EpsilonCivBattleStrategy(new FixedDiceStrategy()));
+        game = new GameImpl(new EpsilonCivFactory(new FixedDiceStrategy()));
     }
 
     @Test

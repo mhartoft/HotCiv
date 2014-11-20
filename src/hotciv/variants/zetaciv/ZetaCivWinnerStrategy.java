@@ -18,7 +18,7 @@ public class ZetaCivWinnerStrategy implements WinnerStrategy {
 
     @Override
     public Player getWinner(GameImpl game) {
-        nrOfRounds += 1;
+        if (game.getBecauseEndOfRound()) nrOfRounds += 1;
         if (nrOfRounds == 20 && state == stateOne) {
             battleWinsAt20 = (HashMap<Player,Integer>) game.getBattleWins().clone();
             ZetaCivWinnerState stateTwo = new ZetaCivEpsilonCivWinnerState(this, battleWinsAt20);

@@ -2,11 +2,9 @@ package hotciv.standard;
 
 import hotciv.framework.*;
 
-import hotciv.variants.alphaciv.AlphaCivAgingStrategy;
-import hotciv.variants.alphaciv.AlphaCivBattleStrategy;
-import hotciv.variants.alphaciv.AlphaCivWinnerStrategy;
-import hotciv.variants.alphaciv.AlphaCivWorldLayoutStrategy;
+import hotciv.variants.alphaciv.*;
 import hotciv.variants.gammaciv.GammaCivActionStrategy;
+import hotciv.variants.gammaciv.GammaCivFactory;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -41,10 +39,7 @@ public class TestGammaCiv {
     /** Fixture for gammaciv testing. */
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaCivAgingStrategy(),
-                new AlphaCivWinnerStrategy(),
-                new GammaCivActionStrategy(),
-                new AlphaCivWorldLayoutStrategy(), new AlphaCivBattleStrategy()); // GammaCiv resembles AlphaCiv except for unit actions
+        game = new GameImpl(new GammaCivFactory()); // GammaCiv resembles AlphaCiv except for unit actions
     }
 
     @Test

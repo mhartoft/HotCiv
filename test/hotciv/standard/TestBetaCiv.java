@@ -6,8 +6,10 @@ import hotciv.framework.Player;
 import hotciv.framework.Position;
 import hotciv.variants.alphaciv.AlphaCivActionStrategy;
 import hotciv.variants.alphaciv.AlphaCivBattleStrategy;
+import hotciv.variants.alphaciv.AlphaCivFactory;
 import hotciv.variants.alphaciv.AlphaCivWorldLayoutStrategy;
 import hotciv.variants.betaciv.BetaCivAgingStrategy;
+import hotciv.variants.betaciv.BetaCivFactory;
 import hotciv.variants.betaciv.BetaCivWinnerStrategy;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -20,10 +22,7 @@ public class TestBetaCiv {
     /** Fixture for betaciv testing. */
     @Before
     public void setUp() {
-        game = new GameImpl(new BetaCivAgingStrategy(),
-                            new BetaCivWinnerStrategy(),
-                            new AlphaCivActionStrategy(),
-                            new AlphaCivWorldLayoutStrategy(), new AlphaCivBattleStrategy());
+        game = new GameImpl(new BetaCivFactory());
     }
 
     @Test

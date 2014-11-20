@@ -2,6 +2,7 @@ package hotciv.standard;
 
 import hotciv.common.*;
 import hotciv.framework.*;
+import hotciv.variants.alphaciv.AlphaCivFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,25 +49,23 @@ public class GameImpl implements Game {
     private Player playerInTurn;
     private HashMap<String, Integer> costs;
     private HashMap<Player, Integer> battleWins;
+    private boolean becauseEndOfRound;
 
-    public GameImpl(AgingStrategy chosenAgeStrategy,
-                    WinnerStrategy chosenWinnerStrategy,
-                    UnitActionStrategy actionStrategy,
-                    WorldLayoutStrategy layoutStrategy,
-                    BattleStrategy battleStrategy) {
+    public GameImpl(HotCivFactory factory) {
 
         tiles = new HashMap<Position, TileImpl>();
         units = new HashMap<Position, UnitImpl>();
         cities = new HashMap<Position, CityImpl>();
         battleWins = new HashMap<Player, Integer>();
 
-        this.layoutStrategy = layoutStrategy;
-        layoutStrategy.worldLayout(this);
+        ageController = factory.createAgingStrategy();
+        winnerController = factory.createWinnerStrategy();
+        actionStrategy = factory.createUnitActionStrategy();
+        layoutStrategy = factory.createWorldLayoutStrategy();
+        battleStrategy = factory.createBattleStrategy();
 
-        this.ageController = chosenAgeStrategy;
-        this.winnerController = chosenWinnerStrategy;
-        this.actionStrategy = actionStrategy;
-        this.battleStrategy = battleStrategy;
+
+        layoutStrategy.worldLayout(this);
 
         costs = new HashMap();
         costs.put(GameConstants.ARCHER, 10);
@@ -128,7 +127,9 @@ public class GameImpl implements Game {
             playerInTurn = Player.BLUE;
         }else{ // otherwise it becomes red's turn
             playerInTurn = Player.RED;
-            getWinner(); // synchronizes winner strategies (especially for ZetaCiv)
+            becauseEndOfRound = true;
+            getWinner(); // synchronizes winner strategies (especially for ZetaCiv) at end of round
+            becauseEndOfRound = false;
 
             // Cities accumulate resources
             // And produce if possible
@@ -216,7 +217,7 @@ public class GameImpl implements Game {
 
     public HashMap<Player, Integer> getBattleWins() { return battleWins; }
 
-    public void resetBattleCounts(){
-        battleWins = new HashMap<Player, Integer>();
+    public boolean getBecauseEndOfRound(){
+        return becauseEndOfRound;
     }
 }
