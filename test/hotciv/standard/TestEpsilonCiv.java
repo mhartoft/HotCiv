@@ -46,7 +46,7 @@ public class TestEpsilonCiv {
     @Before
     public void setUp() {
         game = new GameImpl(new AlphaCivAgingStrategy(),
-                new EpsilonCivWinnerStrategy(),
+                new EpsilonCivWinnerStrategy(new HashMap<Player, Integer>()),
                 new AlphaCivActionStrategy(),
                 new AlphaCivWorldLayoutStrategy(),
                 new EpsilonCivBattleStrategy(new FixedDiceStrategy()));
@@ -80,6 +80,7 @@ public class TestEpsilonCiv {
         Unit endUnit = game.getUnitAt(new Position(1,1));
         assertEquals("Red should win when blue attacks 1,1", Player.RED, endUnit.getOwner());
     }
+
 
     @Test
     public void shouldBeBlueLegionAt2_1AfterBattle(){

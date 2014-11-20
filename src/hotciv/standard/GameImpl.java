@@ -46,7 +46,7 @@ public class GameImpl implements Game {
     private HashMap<Position, CityImpl> cities;
     private int year;
     private Player playerInTurn;
-    private HashMap costs;
+    private HashMap<String, Integer> costs;
     private HashMap<Player, Integer> battleWins;
 
     public GameImpl(AgingStrategy chosenAgeStrategy,
@@ -110,7 +110,7 @@ public class GameImpl implements Game {
         if (toUnit != null && !toUnit.getOwner().equals(targetUnit.getOwner())){
             boolean battleOutcome = battleStrategy.battle(from, to, this);
             if(!battleOutcome){
-                units.remove(from, getUnitAt(from));
+                units.remove(from);
                 return true;
             }else{
                 increaseWins(targetUnit.getOwner());
