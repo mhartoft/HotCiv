@@ -18,7 +18,7 @@ public class EpsilonCivFactory extends AlphaCivFactory {
 
     @Override
     public WinnerStrategy createWinnerStrategy() {
-        return new EpsilonCivWinnerStrategy(new HashMap<Player, Integer>());
+        return new EpsilonCivWinnerStrategy();
     }
 
     @Override

@@ -80,6 +80,7 @@ public class TestBetaCiv {
         City blueCity = game.getCityAt(new Position(4,1));
         assertEquals("Blue should own city at 4,1", Player.BLUE, blueCity.getOwner());
         game.moveUnit(new Position(2,0), new Position(3,1));
+        helperForEndOfRounds(1);
         game.moveUnit(new Position(3,1), new Position(4,1));
         // now the red archer is standing on what was the blue city
         City city = game.getCityAt(new Position(4,1));
@@ -89,6 +90,7 @@ public class TestBetaCiv {
     @Test
     public void shouldShowRedAsWinnerAfterTakingOverBlueCity(){
         game.moveUnit(new Position(2,0), new Position(3,1));
+        helperForEndOfRounds(1);
         game.moveUnit(new Position(3, 1), new Position(4, 1));
         City redCity = game.getCityAt(new Position(1,1));
         assertEquals("Red should own city at 1,1", Player.RED, redCity.getOwner());

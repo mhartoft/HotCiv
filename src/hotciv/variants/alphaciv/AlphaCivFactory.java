@@ -13,4 +13,5 @@ public class AlphaCivFactory implements HotCivFactory {
     public BattleStrategy createBattleStrategy(){return new AlphaCivBattleStrategy();}
     public WorldLayoutStrategy createWorldLayoutStrategy(){return new AlphaCivWorldLayoutStrategy();}
     public UnitActionStrategy createUnitActionStrategy(){return new AlphaCivActionStrategy();}
+    public UnitProductionStrategy createUnitProductionStrategy(){return new AlphaCivUnitProductionStrategy();}
 }

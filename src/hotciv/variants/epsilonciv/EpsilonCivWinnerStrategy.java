@@ -19,6 +19,7 @@ public class EpsilonCivWinnerStrategy implements WinnerStrategy{
     public EpsilonCivWinnerStrategy(HashMap<Player, Integer> battleWins) {
         this.battleWinsInit = battleWins;
     }
+    public EpsilonCivWinnerStrategy(){this.battleWinsInit = new HashMap<Player, Integer>();}
 
     @Override
     public Player getWinner(GameImpl game) {

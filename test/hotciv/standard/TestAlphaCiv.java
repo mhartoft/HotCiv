@@ -40,6 +40,17 @@ public class TestAlphaCiv {
         game = new GameImpl(new AlphaCivFactory());
     }
 
+    // Week 4 addition from backlog:
+    // Units have a fixed distance they are able to move each round
+
+    @Test
+    public void shouldNotBeAbleToMoveMoreThanOnceEachRound(){
+        boolean move1 = game.moveUnit(new Position(2,0), new Position(2,1));
+        assertTrue("First move is perfectly legal", move1);
+        boolean move2 = game.moveUnit(new Position(2,1), new Position(2,0));
+        assertFalse("Second move exceeds unit distance for round", move2);
+    }
+
     @Test
     public void shouldHaveRedCityAt1_1() {
         City c = game.getCityAt(new Position(1,1));
@@ -150,12 +161,15 @@ public class TestAlphaCiv {
         Unit defenseUnit = game.getUnitAt(new Position(3,2));
         // I move the red archer three times, till it ends on the blue legion
         game.moveUnit(new Position(2,0), new Position(2,1));
+        helperForEndOfRounds(1);
         game.moveUnit(new Position(2,1), new Position(3,1));
+        helperForEndOfRounds(1);
         game.moveUnit(new Position(3,1), new Position(3,2));
         // Critical position is 3,2.
         Unit victoriousUnit = game.getUnitAt(new Position(3,2));
         assertEquals("Owners should be different", false, victoriousUnit.getOwner() == defenseUnit.getOwner());
         assertEquals("Victorious unit should be Red", Player.RED, victoriousUnit.getOwner());
+        helperForEndOfRounds(1);
         game.moveUnit(new Position(3,2), new Position(3,3));
         assertEquals("Unit on 3,3 should be owned by Red", Player.RED, game.getUnitAt(new Position(3,3)).getOwner());
         assertEquals("There should not, be no unit at 3,2", null, game.getUnitAt(new Position(3,2)));

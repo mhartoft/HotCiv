@@ -46,6 +46,7 @@ public class TestZetaCiv {
     @Test // copied from TestBetaCiv
     public void shouldShowRedAsWinnerAfterTakingOverBlueCity(){
         game.moveUnit(new Position(2,0), new Position(3,1));
+        helperForEndOfRounds(1);
         game.moveUnit(new Position(3, 1), new Position(4, 1));
         City redCity = game.getCityAt(new Position(1,1));
         assertEquals("Red should own city at 1,1", Player.RED, redCity.getOwner());

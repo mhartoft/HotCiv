@@ -2,7 +2,7 @@ package hotciv.standard;
 
 import hotciv.common.*;
 import hotciv.framework.*;
-import hotciv.variants.alphaciv.AlphaCivFactory;
+import hotciv.variants.thetaciv.ThetaCivConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +42,7 @@ public class GameImpl implements Game {
     private UnitActionStrategy actionStrategy;
     private WorldLayoutStrategy layoutStrategy;
     private BattleStrategy battleStrategy;
+    private UnitProductionStrategy unitProductionStrategy;
     private HashMap<Position, TileImpl> tiles;
     private HashMap<Position, UnitImpl> units;
     private HashMap<Position, CityImpl> cities;
@@ -63,6 +64,7 @@ public class GameImpl implements Game {
         actionStrategy = factory.createUnitActionStrategy();
         layoutStrategy = factory.createWorldLayoutStrategy();
         battleStrategy = factory.createBattleStrategy();
+        unitProductionStrategy = factory.createUnitProductionStrategy();
 
 
         layoutStrategy.worldLayout(this);
@@ -71,6 +73,7 @@ public class GameImpl implements Game {
         costs.put(GameConstants.ARCHER, 10);
         costs.put(GameConstants.LEGION, 15);
         costs.put(GameConstants.SETTLER, 30);
+        costs.put(ThetaCivConstants.CHARIOT, 20);
 
         year = -4000;
 
@@ -99,6 +102,7 @@ public class GameImpl implements Game {
         if (targetUnit.getOwner() != getPlayerInTurn()) return false;
         if (isPositionOccupiedByFriendlyUnit(to, targetUnit.getOwner())) return false;
         if (targetUnit.getFortified()) return false;
+        if (targetUnit.getDistanceAllowed() <= 0) return false;
 
         Tile t = getTileAt(to);
         if (t.getTypeString().equals(GameConstants.MOUNTAINS)) return false;
@@ -110,6 +114,7 @@ public class GameImpl implements Game {
             boolean battleOutcome = battleStrategy.battle(from, to, this);
             if(!battleOutcome){
                 units.remove(from);
+                targetUnit.hasMoved();
                 return true;
             }else{
                 increaseWins(targetUnit.getOwner());
@@ -120,6 +125,7 @@ public class GameImpl implements Game {
         // if a city exists at end location, change ownership
         CityImpl city = getCityAt(to);
         if (city != null) city.changeOwner(targetUnit.getOwner());
+        targetUnit.hasMoved();
         return true;
     }
     public void endOfTurn() {
@@ -130,6 +136,12 @@ public class GameImpl implements Game {
             becauseEndOfRound = true;
             getWinner(); // synchronizes winner strategies (especially for ZetaCiv) at end of round
             becauseEndOfRound = false;
+
+            // Go through all units and reset distance
+            for (Map.Entry<Position, UnitImpl> entry : units.entrySet()){
+                UnitImpl u = entry.getValue();
+                u.resetDistance();
+            }
 
             // Cities accumulate resources
             // And produce if possible
@@ -150,7 +162,7 @@ public class GameImpl implements Game {
     public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
     public void changeProductionInCityAt( Position p, String unitType ) {
         CityImpl c = getCityAt(p);
-        c.setProduction(unitType);
+        unitProductionStrategy.changeProductionInCityAt(this,p,unitType);
     }
     public void performUnitActionAt( Position p ) {
         actionStrategy.action(this,p);
