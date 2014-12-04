@@ -54,7 +54,7 @@ public class GameLogDecorator implements Game {
                                from.toString() +
                                " to " +
                                to.toString());
-        }
+        } // should we log if a move is prohibited?
         return move;
     }
 

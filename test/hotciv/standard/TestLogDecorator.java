@@ -96,9 +96,10 @@ public class TestLogDecorator {
 
     @Test
     public void shouldTurnLoggingOnAndOffDynamically(){
+        // This test changes logging dynamically at run(test)-time
         toggleLogging();
         game.performUnitActionAt(new Position(2,0)); // this should not be logged
-        assertEquals("", outContent.toString());
+        assertEquals("", outContent.toString()); // nothing has been written (hopefully)
         toggleLogging();
         game.changeProductionInCityAt(new Position(1,1), GameConstants.LEGION);
         assertEquals("RED changes production in city at [1,1] to legion\n", outContent.toString());

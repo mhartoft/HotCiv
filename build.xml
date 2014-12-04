@@ -27,6 +27,7 @@
   <property name="doc-directory" value="doc"/>
   
   <property name="junitJar" value="lib/junit-4.4.jar"/>
+  <property name="fractalJar" value="lib/fractal.jar"/>
 
   <!-- JaCoCo Coverage analysis -->
   <taskdef uri="antlib:org.jacoco.ant" 
