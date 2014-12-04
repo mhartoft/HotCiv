@@ -4,8 +4,10 @@ import hotciv.common.WorldLayoutStrategy;
 import hotciv.framework.GameConstants;
 import hotciv.framework.Player;
 import hotciv.framework.Position;
+import hotciv.variants.deltaciv.DeltaCivWorldLayoutStrategy;
 import thirdparty.ThirdPartyFractalGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,41 +16,27 @@ import java.util.Map;
  */
 public class FractalMapAdapter implements WorldLayoutStrategy {
     private ThirdPartyFractalGenerator thirdPartyFractalGenerator;
-    private HashMap<Position, String> theWorld;
+    private ArrayList<String> rowArray;
+    private String[] layout;
 
     public FractalMapAdapter(){
         thirdPartyFractalGenerator = new ThirdPartyFractalGenerator();
-        theWorld = new HashMap<Position,String>();
+        rowArray = new ArrayList<String>();
+        StringBuilder currentRow;
         for ( int r = 0; r < GameConstants.WORLDSIZE; r++ ) {
+            currentRow = new StringBuilder();
             for (int c = 0; c < GameConstants.WORLDSIZE; c++) {
                 char tileChar = thirdPartyFractalGenerator.getLandscapeAt(r,c);
-                String type = "error";
-                if (tileChar == '.') {
-                    type = GameConstants.OCEANS;
-                }
-                if (tileChar == 'o') {
-                    type = GameConstants.PLAINS;
-                }
-                if (tileChar == 'M') {
-                    type = GameConstants.MOUNTAINS;
-                }
-                if (tileChar == 'f') {
-                    type = GameConstants.FOREST;
-                }
-                if (tileChar == 'h') {
-                    type = GameConstants.HILLS;
-                }
-                Position p = new Position(r, c);
-                theWorld.put(p, type);
+                currentRow.append(tileChar);
             }
+            System.out.println(currentRow.toString());
+            rowArray.add(currentRow.toString());
         }
+        layout = rowArray.toArray(new String[rowArray.size()]);
     }
     @Override
     public void worldLayout(GameImpl gameObj) {
-        for (Map.Entry<Position, String> entry : theWorld.entrySet()) {
-            Position p = entry.getKey();
-            String t = entry.getValue();
-            gameObj.createTile(p, t);
-        }
+        DeltaCivWorldLayoutStrategy dCWLS = new DeltaCivWorldLayoutStrategy(layout);
+        dCWLS.worldLayout(gameObj);
     }
 }

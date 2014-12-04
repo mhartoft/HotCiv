@@ -49,7 +49,7 @@ public class UnitImpl implements Unit {
 
     @Override
     public int getMoveCount() {
-        return 0;
+        return distance;
     }
 
     @Override
